@@ -26,9 +26,9 @@
 int32_t sock_server;
 
 
-#define CA_CERT "key/cacert.pem"
-#define SERVER_CERT "key/peer1.cert.pem"
-#define SERVER_KEY "key/peer1.key.pem"
+#define CA_CERT "key/ca.pem"
+#define SERVER_CERT "key/peer1.pem"
+#define SERVER_KEY "key/peer1.key"
 
 enum tls_tatus_t
 {
