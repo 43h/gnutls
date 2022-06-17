@@ -21,9 +21,9 @@
 #define SERVER_IP "192.168.1.253"
 #define SERVER_PORT 20000
 
-#define CA_CERT "key/cacert.pem"
-#define CLIENT_CERT "key/peer2.cert.pem"
-#define CLIENT_KEY "key/peer2.key.pem"
+#define CA_CERT "key/ca.pem"
+#define CLIENT_CERT "key/peer2.pem"
+#define CLIENT_KEY "key/peer2.key"
 
 struct sockaddr_in addr_client[CLIENT_SIZE];
 struct sockaddr_in addr_server;
@@ -72,7 +72,7 @@ int32_t main(int argc, char *argv[])
     gnutls_global_init();
     gnutls_certificate_allocate_credentials(&x509_cred);
     gnutls_certificate_set_x509_trust_file(x509_cred, CA_CERT, GNUTLS_X509_FMT_PEM);
-    //gnutls_certificate_set_x509_key_file(x509_cred, CLIENT_CERT, CLIENT_KEY, GNUTLS_X509_FMT_PEM);
+    gnutls_certificate_set_x509_key_file(x509_cred, CLIENT_CERT, CLIENT_KEY, GNUTLS_X509_FMT_PEM);
     //init server
     addr_server.sin_family = AF_INET;
     addr_server.sin_port = htons(SERVER_PORT);
@@ -135,7 +135,6 @@ loop:
         gnutls_init(session + i, GNUTLS_CLIENT | GNUTLS_NONBLOCK);
         gnutls_credentials_set(session[i], GNUTLS_CRD_CERTIFICATE, x509_cred);
         gnutls_priority_set_direct(session[i], "NONE:+VERS-TLS-ALL:+MAC-ALL:+RSA:+NULL:+SIGN-ALL:+COMP-NULL", NULL);
-        gnutls_certificate_server_set_request(session + i,GNUTLS_CERT_IGNORE);
         gnutls_handshake_set_timeout(session[i], GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT);
 
         gnutls_transport_set_int(session[i], sockfd[i]);
