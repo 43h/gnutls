@@ -150,13 +150,15 @@ void work_thread(void *param)
             else if(client_info[i].status == TLS_STATUS_CONNECTED)
             {
                 gnutls_init(&client_info[i].session, GNUTLS_SERVER | GNUTLS_NONBLOCK);
+                gnutls_set_default_priority (client_info[i].session);
                 //gnutls_priority_set(client_info[i].session, priority_cache);
-                gnutls_priority_set_direct(client_info[i].session, "NONE:+VERS-TLS-ALL:+MAC-ALL:+RSA:+NULL:+SIGN-ALL:+COMP-NULL", NULL);
+                //gnutls_priority_set_direct(client_info[i].session, "NONE:+VERS-TLS-ALL:+MAC-ALL:+RSA:+NULL:+SIGN-ALL:+COMP-NULL", NULL);
                 gnutls_credentials_set(client_info[i].session, GNUTLS_CRD_CERTIFICATE, x509_cred);
                 gnutls_certificate_server_set_request(client_info[i].session, GNUTLS_CERT_REQUIRE);
                 //gnutls_certificate_server_set_request(client_info[i].session, GNUTLS_CERT_IGNORE);
                 gnutls_handshake_set_timeout(client_info[i].session, GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT);
                 gnutls_transport_set_int(client_info[i].session, client_info[i].sockfd);
+                gnutls_session_set_verify_cert(client_info[i].session, NULL, GNUTLS_VERIFY_DO_NOT_ALLOW_SAME);
                 client_info[i].status = TLS_STATUS_HANDSHAKE;
             }
 

@@ -134,10 +134,11 @@ loop:
     {
         gnutls_init(session + i, GNUTLS_CLIENT | GNUTLS_NONBLOCK);
         gnutls_credentials_set(session[i], GNUTLS_CRD_CERTIFICATE, x509_cred);
-        gnutls_priority_set_direct(session[i], "NONE:+VERS-TLS-ALL:+MAC-ALL:+RSA:+NULL:+SIGN-ALL:+COMP-NULL", NULL);
+        gnutls_set_default_priority (session[i]);
+        //gnutls_priority_set_direct(session[i], "NONE:+VERS-TLS-ALL:+MAC-ALL:+RSA:+NULL:+SIGN-ALL:+COMP-NULL", NULL);
         gnutls_handshake_set_timeout(session[i], GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT);
-
         gnutls_transport_set_int(session[i], sockfd[i]);
+        gnutls_session_set_verify_cert(session[i], NULL, GNUTLS_VERIFY_DO_NOT_ALLOW_SAME);
     }
 
     printf("start to handshake\n");
